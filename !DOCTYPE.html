@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>환율과 주식시장 심층 분석 인포그래픽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #F0F8FF;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flow-box {
+            @apply text-center p-4 bg-gray-100 rounded-lg shadow w-40 md:w-52;
+        }
+        .flow-arrow {
+            @apply text-4xl font-bold text-blue-800 hidden md:block;
+        }
+        .flow-arrow-mobile {
+            @apply text-4xl font-bold text-blue-800 md:hidden my-2;
+        }
+        .step-card {
+            @apply bg-white p-6 rounded-lg shadow-lg flex-1 min-w-[280px];
+        }
+        .step-number {
+            @apply text-5xl font-bold text-blue-800 mb-2;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-blue-900 text-white p-6 shadow-lg">
+        <h1 class="text-3xl md:text-4xl font-bold text-center">환율과 주식시장: 복잡한 상관관계 심층 분석</h1>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-4 md:p-8">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <section class="md:col-span-2 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-3xl font-bold text-blue-800 mb-6 text-center">1. 전통적인 공식: 역(逆)의 상관관계</h2>
+                <p class="text-lg text-gray-700 mb-8 text-center max-w-3xl mx-auto">
+                    일반적으로 환율과 주식시장은 반대로 움직입니다. 이는 외국인 투자자의 자금 흐름이 환율 변동에 따른 '환차손'과 '환차익' 기대에 크게 좌우되기 때문입니다.
+                </p>
+
+                <div class="space-y-8">
+                    <div class="flex flex-col md:flex-row justify-around items-center p-4 bg-red-50 rounded-lg">
+                        <div class="flow-box border-l-4 border-red-500">
+                            <span class="text-lg font-bold">환율 상승 📈</span>
+                            <span class="text-sm block">(원화 약세)</span>
+                        </div>
+                        <span class="flow-arrow">&rarr;</span>
+                        <span class="flow-arrow-mobile">&darr;</span>
+                        <div class="flow-box">
+                            <span class="text-lg font-bold">외국인 자금 유출 🏃</span>
+                            <span class="text-sm block">(환차손 우려)</span>
+                        </div>
+                        <span class="flow-arrow">&rarr;</span>
+                        <span class="flow-arrow-mobile">&darr;</span>
+                        <div class="flow-box border-l-4 border-red-500">
+                            <span class="text-lg font-bold">주가 하락 📉</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col md:flex-row justify-around items-center p-4 bg-green-50 rounded-lg">
+                        <div class="flow-box border-l-4 border-green-500">
+                            <span class="text-lg font-bold">환율 하락 📉</span>
+                            <span class="text-sm block">(원화 강세)</span>
+                        </div>
+                        <span class="flow-arrow">&rarr;</span>
+                        <span class="flow-arrow-mobile">&darr;</span>
+                        <div class="flow-box">
+                            <span class="text-lg font-bold">외국인 자금 유입 💰</span>
+                            <span class="text-sm block">(환차익 기대)</span>
+                        </div>
+                        <span class="flow-arrow">&rarr;</span>
+                        <span class="flow-arrow-mobile">&darr;</span>
+                        <div class="flow-box border-l-4 border-green-500">
+                            <span class="text-lg font-bold">주가 상승 📈</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-3xl font-bold text-blue-800 mb-6 text-center">2. 뉘앙스: 업종별 유불리</h2>
+                <p class="text-lg text-gray-700 mb-6">
+                    하지만 이 공식은 모든 기업에 동일하게 적용되지 않습니다. '환율 상승(원화 약세)'은 기업의 사업 모델에 따라 극명한 유불리를 만듭니다.
+                </p>
+                <ul class="space-y-4">
+                    <li class="p-4 bg-blue-50 rounded-lg shadow-sm">
+                        <h4 class="text-xl font-bold text-blue-700">수출 중심 기업 (긍정적 👍)</h4>
+                        <p class="text-gray-700">달러로 받은 수출 대금을 원화로 환전 시 이익이 커집니다. (예: 반도체, 자동차)</p>
+                    </li>
+                    <li class="p-4 bg-red-50 rounded-lg shadow-sm">
+                        <h4 class="text-xl font-bold text-red-700">수입 중심 기업 (부정적 👎)</h4>
+                        <p class="text-gray-700">해외 원자재 수입 비용 부담이 커져 수익성이 악화됩니다. (예: 음식료, 항공)</p>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold text-center text-blue-800 mb-2">'환율 상승' 시 업종별 영향</h3>
+                <p class="text-center text-gray-600 mb-4">환율 상승이 수출 기업에 호재가 되는 정도가 수입 기업에 악재가 되는 정도보다 크다고 가정할 때, KOSPI 내 비중을 고려한 영향력 예시입니다.</p>
+                <div class="chart-container">
+                    <canvas id="sectorChart"></canvas>
+                </div>
+            </section>
+
+            <section class="md:col-span-2 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-3xl font-bold text-blue-800 mb-2 text-center">3. 예외 ①: 환율과 주가의 동반 상승</h2>
+                <p class="text-lg text-gray-700 mb-6 text-center max-w-3xl mx-auto">
+                    가장 주목할 만한 예외는 2024년 상반기처럼 환율이 상승(원화 약세)하는데도 주가(KOSPI)가 동반 상승하는 경우입니다.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <div class="text-center p-6 bg-blue-50 rounded-lg shadow-lg">
+                        <span class="block text-5xl font-bold text-blue-800">18조+</span>
+                        <span class="block text-xl font-semibold text-blue-900 mt-2">외국인 순매수</span>
+                        <span class="block text-sm text-gray-700">(2024년 상반기)</span>
+                        <p class="mt-3 text-gray-700">
+                            환차손 위험에도 불구, 한국 반도체 등 특정 산업의 압도적인 성장성에 베팅한 자금이 대거 유입되었습니다.
+                        </p>
+                    </div>
+                    <div class="md:col-span-2">
+                        <div class="chart-container" style="max-width: 100%;">
+                            <canvas id="exceptionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="md:col-span-2 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-3xl font-bold text-blue-800 mb-6 text-center">4. 예외 ①의 원인: '실적 프리미엄'의 3단계</h2>
+                <p class="text-lg text-gray-700 mb-8 text-center max-w-3xl mx-auto">
+                    이러한 예외는 '환율 리스크'보다 '기업의 이익 증가 기대감'이 훨씬 더 클 때 발생합니다.
+                </p>
+                <div class="flex flex-col md:flex-row gap-6 justify-center">
+                    <div class="step-card border-t-4 border-blue-800">
+                        <div class="step-number">1</div>
+                        <h4 class="text-2xl font-bold text-blue-800 mb-3">수출 기업 호재</h4>
+                        <p class="text-gray-700">1차적으로 환율 상승은 수출 기업의 가격 경쟁력과 환차익을 높여 실적에 긍정적 신호를 줍니다.</p>
+                    </div>
+                    <div class="step-card border-t-4 border-blue-800">
+                        <div class="step-number">2</div>
+                        <h4 class="text-2xl font-bold text-blue-800 mb-3">'메가 트렌드' 등장</h4>
+                        <p class="text-gray-700">AI, HBM(반도체) 등 특정 산업이 글로벌 메가 트렌드를 주도하며 폭발적인 성장 기대감을 형성합니다.</p>
+                    </div>
+                    <div class="step-card border-t-4 border-blue-800">
+                        <div class="step-number">3</div>
+                        <h4 class="text-2xl font-bold text-blue-800 mb-3">외국인의 '베팅'</h4>
+                        <p class="text-gray-700">단기 환차손 위험을 감수하고라도, 이 구조적 성장주의 미래 가치에 베팅하는 전략적 순매수가 유입되어 주가를 견인합니다.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="md:col-span-2 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-3xl font-bold text-blue-800 mb-6 text-center">5. 예외 ②: 환율과 주가의 동반 하락</h2>
+                <p class="text-lg text-gray-700 mb-8 text-center max-w-3xl mx-auto">
+                    반대로 환율이 하락(원화 강세)하는데도 주가가 하락하는, 더 비관적인 예외 상황도 있습니다.
+                </p>
+                <div class="flex flex-col md:flex-row gap-6 justify-center">
+                    <div class="step-card border-t-4 border-red-700">
+                        <div class="step-number text-red-700">1</div>
+                        <h4 class="text-2xl font-bold text-red-700 mb-3">글로벌 경기 침체</h4>
+                        <p class="text-gray-700">전 세계적인 경기 둔화 우려가 발생하면, 투자자들은 환율과 무관하게 위험 자산(주식) 자체를 회피합니다.</p>
+                    </div>
+                    <div class="step-card border-t-4 border-red-700">
+                        <div class="step-number text-red-700">2</div>
+                        <h4 class="text-2xl font-bold text-red-700 mb-3">수출 실적 악화</h4>
+                        <p class="text-gray-700">원화 강세로 가격 경쟁력이 하락하는 동시에, 글로벌 수요 위축으로 수출 물량 자체가 줄어들 것이라 예상됩니다.</p>
+                    </div>
+                    <div class="step-card border-t-4 border-red-700">
+                        <div class="step-number text-red-700">3</div>
+                        <h4 class="text-2xl font-bold text-red-700 mb-3">'위험 회피' 심리</h4>
+                        <p class="text-gray-700">환율 하락(환차익 기대)이라는 호재보다, '기업 실적 악화'와 '경기 불안'이라는 악재가 시장을 지배하며 주가가 하락합니다.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="md:col-span-2 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-3xl font-bold text-blue-800 mb-6 text-center">6. 결론: 현재 트렌드와 분석 관점</h2>
+                <p class="text-lg text-gray-700 mb-8 text-center max-w-3xl mx-auto">
+                    최근 시장은 환율을 여러 변수 중 하나로 인식하며, 더 복합적인 분석을 요구하고 있습니다.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-6 bg-gray-100 rounded-lg shadow">
+                        <h4 class="text-xl font-bold text-blue-800 mb-2">① 환율 변동의 '원인'</h4>
+                        <p class="text-gray-700">'킹 달러' 현상(달러화 요인)인지, 국내 경제 불안(국내 요인)인지 구분하여 분석해야 합니다.</p>
+                    </div>
+                    <div class="p-6 bg-gray-100 rounded-lg shadow">
+                        <h4 class="text-xl font-bold text-blue-800 mb-2">② 업종별 차별화 심화</h4>
+                        <p class="text-gray-700">환율의 영향이 업종별, 기업별 실적에 미치는 영향이 과거보다 더욱 세분화되고 있습니다.</p>
+                    </div>
+                    <div class="p-6 bg-gray-100 rounded-lg shadow">
+                        <h4 class="text-xl font-bold text-blue-800 mb-2">③ 구조적 체질(펀더멘탈)</h4>
+                        <p class="text-gray-700">무역수지 흑자 기조 등 한국 경제의 펀더멘탈이 개선되어 고환율의 충격이 과거보다 완화될 수 있습니다.</p>
+                    </div>
+                </div>
+
+                <div class="mt-10 p-6 bg-blue-50 border-l-4 border-blue-800 rounded-lg shadow-inner">
+                    <p class="text-xl font-bold text-blue-900 text-center">
+                        최종 결론: 환율은 주식 시장을 결정하는 '하나의 요인'일 뿐,
+                        <br class="hidden md:block">
+                        기업 실적, 미국 통화 정책, 글로벌 경기 상황 등 거시적 변수와 함께 보아야 합니다.
+                    </p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="text-center p-6 mt-8 text-gray-500 text-sm">
+        이 인포그래픽은 제공된 '환율과 주식시장 상관관계 분석' 문서를 기반으로 생성되었습니다.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                } else {
+                    return label;
+                }
+            };
+            
+            const processLabel = (label) => {
+                if (typeof label !== 'string' || label.length <= 16) {
+                    return label;
+                }
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                for (const word of words) {
+                    if ((currentLine + ' ' + word).trim().length > 16 && currentLine !== '') {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                }
+                if (currentLine) {
+                    lines.push(currentLine);
+                }
+                return lines;
+            };
+
+            const sectorChartCtx = document.getElementById('sectorChart');
+            if (sectorChartCtx) {
+                const rawLabels = ['수출 중심 기업 (긍정적)', '수입 중심 기업 (부정적)'];
+                const processedLabels = rawLabels.map(processLabel);
+
+                new Chart(sectorChartCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: processedLabels,
+                        datasets: [{
+                            data: [60, 40],
+                            backgroundColor: ['#0077B5', '#D9534F'],
+                            borderColor: '#ffffff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    font: {
+                                        size: 14
+                                    },
+                                    color: '#333'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: tooltipTitleCallback
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const exceptionChartCtx = document.getElementById('exceptionChart');
+            if (exceptionChartCtx) {
+                new Chart(exceptionChartCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['2024-01', '2024-02', '2024-03', '2024-04', '2024-05', '2024-06'],
+                        datasets: [
+                            {
+                                label: '원/달러 환율',
+                                data: [1310, 1330, 1340, 1380, 1360, 1370],
+                                yAxisID: 'yRate',
+                                borderColor: '#00A1E4',
+                                backgroundColor: 'rgba(0, 161, 228, 0.1)',
+                                tension: 0.1,
+                                borderWidth: 3
+                            },
+                            {
+                                label: 'KOSPI',
+                                data: [2500, 2650, 2700, 2680, 2720, 2750],
+                                yAxisID: 'yKospi',
+                                borderColor: '#0077B5',
+                                backgroundColor: 'rgba(0, 119, 181, 0.1)',
+                                tension: 0.1,
+                                borderWidth: 3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        stacked: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    title: tooltipTitleCallback
+                                }
+                            }
+                        },
+                        scales: {
+                            yRate: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: '원/달러 환율 (KRW)',
+                                    color: '#00A1E4'
+                                },
+                                ticks: {
+                                    color: '#00A1E4'
+                                },
+                                grid: {
+                                    drawOnChartArea: false
+                                }
+                            },
+                            yKospi: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'KOSPI 지수',
+                                    color: '#0077B5'
+                                },
+                                ticks: {
+                                    color: '#0077B5'
+                                },
+                                grid: {
+                                    drawOnChartArea: true
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#333'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
