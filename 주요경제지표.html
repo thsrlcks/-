@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미국 경제 핵심 지표 (CPI, PCE, NFP) 인포그래픽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-900">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+
+        <header class="text-center mb-10 md:mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#004AAD] mb-4">미국 경제의 핵심 신호등</h1>
+            <p class="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
+                미국 중앙은행(Fed)의 금리 결정을 좌우하는 세 가지 핵심 지표, CPI, PCE, NFP를 한눈에 파악하고 시장의 흐름을 읽어보세요.
+            </p>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+
+            <section class="md:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8 overflow-hidden">
+                <h2 class="text-2xl md:text-3xl font-bold text-[#004AAD] mb-6">Section 1: 두 개의 물가 지표 (CPI vs PCE)</h2>
+                <p class="text-base md:text-lg text-gray-600 mb-6">
+                    인플레이션은 경제의 가장 중요한 변수 중 하나입니다. 미국은 이 인플레이션을 측정하기 위해 두 가지 주요 지표를 사용합니다. CPI는 소비자의 체감 물가를, PCE는 Fed의 정책 기준이 되는 물가를 보여줍니다.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border-4 border-[#0077B6] rounded-lg p-6 bg-blue-50">
+                        <h3 class="text-xl font-bold text-[#004AAD] mb-3">CPI (소비자물가지수)</h3>
+                        <p class="text-gray-700 mb-4">소비자가 구매하는 **고정된 품목 집합**의 가격 변동을 측정합니다.</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><span class="font-semibold">측정 방식:</span> 표준화된 소비 품목</li>
+                            <li><span class="font-semibold">발표 기관:</span> 노동통계국 (BLS)</li>
+                            <li><span class="font-semibold">특징:</span> 대체 효과 미반영</li>
+                            <li><span class="font-semibold">주요 용도:</span> 대중적 인플레이션 체감도</li>
+                        </ul>
+                    </div>
+                    <div class="border-4 border-[#00B4D8] rounded-lg p-6 bg-teal-50">
+                        <h3 class="text-xl font-bold text-[#004AAD] mb-3">PCE (개인소비지출 물가지수)</h3>
+                        <p class="text-gray-700 mb-4">가계가 소비하는 **모든 상품과 서비스**의 가격 변동을 측정합니다.</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><span class="font-semibold">측정 방식:</span> 광범위한 소비 지출</li>
+                            <li><span class="font-semibold">발표 기관:</span> 경제분석국 (BEA)</li>
+                            <li><span class="font-semibold text-red-600">특징:</span> 대체 효과 반영</li>
+                            <li><span class="font-semibold text-red-600">주요 용도:</span> Fed의 공식 물가 목표 (Core PCE 2.0%)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-lg p-6 md:p-8 overflow-hidden">
+                <h3 class="text-2xl font-bold text-[#004AAD] mb-4">물가 지표별 정책 반응 임계값</h3>
+                <p class="text-gray-600 mb-6">Fed는 이 지표들이 특정 수준을 넘어서거나 하회할 때 금리 정책으로 대응합니다. 특히 PCE 2.0%는 Fed의 확고한 물가 안정 목표입니다.</p>
+                <div class="chart-container">
+                    <canvas id="thresholdChart"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4 text-center">각 지표의 목표치, 과열(High), 침체(Low) 기준선 비교</p>
+            </section>
+            
+            <section class="bg-white rounded-lg shadow-lg p-6 md:p-8 overflow-hidden">
+                <h3 class="text-2xl font-bold text-[#004AAD] mb-4">변동성 비교: CPI vs Core PCE</h3>
+                <p class="text-gray-600 mb-6">Fed가 변동성이 큰 식료품과 에너지를 제외한 '근원(Core) PCE'를 중시하는 이유입니다. 근원 PCE는 기저의 물가 압력을 더 안정적으로 보여줍니다.</p>
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 mt-4 text-center">가상 데이터로 본 CPI와 근원 PCE의 변동성 차이</p>
+            </section>
+
+            <section class="md:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8 overflow-hidden">
+                <h2 class="text-2xl md:text-3xl font-bold text-[#004AAD] mb-6">Section 2: 경제의 체력 (NFP 고용 지표)</h2>
+                <p class="text-base md:text-lg text-gray-600 mb-6">
+                    비농업 부문 고용(NFP)은 경제가 얼마나 건강하게 성장하고 있는지를 보여주는 '월간 건강검진표'입니다. 이 수치는 Fed의 두 가지 책무 중 하나인 '최대 고용'과 직결됩니다.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="text-center p-6 rounded-lg bg-red-100 border-2 border-red-400">
+                        <h4 class="text-xl font-bold text-red-700">경기 침체 위험</h4>
+                        <p class="text-4xl font-bold text-red-600 my-2">&lt; 5만</p>
+                        <p class="text-gray-700">일자리 증가가 멈추거나 감소하며, Fed는 경기 부양을 위해 금리 인하를 고려합니다.</p>
+                    </div>
+                    <div class="text-center p-6 rounded-lg bg-blue-100 border-2 border-blue-400">
+                        <h4 class="text-xl font-bold text-blue-700">안정적 성장</h4>
+                        <p class="text-4xl font-bold text-blue-600 my-2">~10만 ~ 15만</p>
+                        <p class="text-gray-700">경제가 인플레이션 없이 건강하게 성장하는 이상적인 상태입니다.</p>
+                    </div>
+                    <div class="text-center p-6 rounded-lg bg-red-100 border-2 border-red-400">
+                        <h4 class="text-xl font-bold text-red-700">경제 과열 신호</h4>
+                        <p class="text-4xl font-bold text-red-600 my-2">&gt; 20만</p>
+                        <p class="text-gray-700">고용이 너무 빠르면 임금 상승을 자극해 인플레이션 압력이 되며, Fed는 금리 인상을 고려합니다.</p>
+                    </div>
+                </div>
+                <h3 class="text-2xl font-bold text-[#004AAD] mb-4 text-center">가상 월별 NFP 변화 추이</h3>
+                <p class="text-gray-600 mb-6 text-center max-w-2xl mx-auto">월별 NFP 수치가 어떻게 '과열'과 '안정', '침체 위험' 구간을 오가는지 보여줍니다.</p>
+                <div class="chart-container">
+                    <canvas id="nfpChart"></canvas>
+                </div>
+            </section>
+
+            <section class="md:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8 overflow-hidden">
+                <h2 class="text-2xl md:text-3xl font-bold text-[#004AAD] mb-6 text-center">Section 3: Fed의 정책 피드백 루프</h2>
+                <p class="text-base md:text-lg text-gray-600 mb-8 max-w-3xl mx-auto text-center">
+                    이 모든 지표는 Fed의 통화 정책 결정을 위한 핵심 재료입니다. 지표가 발표되면 시장은 Fed의 다음 행동을 예측하고, Fed는 이 지표들을 바탕으로 경제의 균형을 맞추려 합니다.
+                </p>
+                <div class="flex flex-col items-center space-y-2">
+                    <div class="bg-[#CAF0F8] text-[#004AAD] p-4 rounded-lg shadow-md font-semibold text-center w-full max-w-md">
+                        1. 핵심 지표 발표 (CPI, PCE, NFP)
+                    </div>
+                    <div class="text-[#0077B6] text-4xl font-bold my-1">↓</div>
+                    <div class="bg-[#90E0EF] text-[#004AAD] p-4 rounded-lg shadow-md font-semibold text-center w-full max-w-md">
+                        2. Fed의 분석 (물가 2% 목표 / 최대 고용 달성 여부)
+                    </div>
+                    <div class="text-[#0077B6] text-4xl font-bold my-1">↓</div>
+                    <div class="flex flex-col md:flex-row gap-4 w-full max-w-3xl justify-center">
+                        <div class="flex-1 text-center p-4 bg-red-100 rounded-lg border-2 border-red-300">
+                            <h4 class="font-bold text-red-700">지표 과열 (High)</h4>
+                            <p class="text-gray-700">정책 대응: <span class="font-bold">금리 인상 (긴축)</span></p>
+                        </div>
+                        <div class="flex-1 text-center p-4 bg-green-100 rounded-lg border-2 border-green-300">
+                            <h4 class="font-bold text-green-700">지표 침체 (Low)</h4>
+                            <p class="text-gray-700">정책 대응: <span class="font-bold">금리 인하 (완화)</span></p>
+                        </div>
+                    </div>
+                    <div class="text-[#0077B6] text-4xl font-bold my-1">↓</div>
+                    <div class="bg-[#0077B6] text-white p-4 rounded-lg shadow-md font-semibold text-center w-full max-w-md">
+                        3. 시장 반응 (주식, 채권, 환율 변동)
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer class="text-center mt-10 md:mt-16 text-gray-500 text-sm">
+            <p>본 인포그래픽은 제공된 자료를 기반으로 제작된 교육용 예시입니다. 실제 투자 결정을 위한 조언이 아닙니다.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        (function() {
+            const chartColors = {
+                darkBlue: '#004AAD',
+                mediumBlue: '#0077B6',
+                lightBlue: '#00B4D8',
+                paleBlue: '#90E0EF',
+                red: '#D90429',
+                gray: '#ADB5BD'
+            };
+
+            function wrapLabel(str) {
+                if (str.length <= 16) {
+                    return str;
+                }
+                const words = str.split(' ');
+                const lines = [];
+                let currentLine = '';
+                for (const word of words) {
+                    if ((currentLine + ' ' + word).trim().length > 16 && currentLine.length > 0) {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                }
+                if (currentLine.length > 0) {
+                    lines.push(currentLine);
+                }
+                return lines;
+            }
+
+            const tooltipPluginConfig = {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            };
+
+            const thresholdCtx = document.getElementById('thresholdChart');
+            if (thresholdCtx) {
+                const originalLabels = [
+                    'CPI 과열 기준 (>3.0%)', 
+                    'PCE Fed 목표/과열 (>2.0%)', 
+                    'CPI 침체 위험 (<1.0%)', 
+                    'PCE 침체 위험 (<1.5%)'
+                ];
+                const processedLabels = originalLabels.map(wrapLabel);
+
+                new Chart(thresholdCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: processedLabels,
+                        datasets: [{
+                            label: '인플레이션(%)',
+                            data: [3.0, 2.0, 1.0, 1.5],
+                            backgroundColor: [
+                                chartColors.red,
+                                chartColors.darkBlue,
+                                chartColors.red,
+                                chartColors.mediumBlue
+                            ],
+                            borderColor: '#ffffff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '연간 상승률 (%)'
+                                }
+                            }
+                        },
+                        ...tooltipPluginConfig
+                    }
+                });
+            }
+
+            const trendCtx = document.getElementById('trendChart');
+            if (trendCtx) {
+                new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+                        datasets: [
+                            {
+                                label: 'CPI (변동성 높음)',
+                                data: [3.5, 3.7, 3.4, 3.8, 3.5, 3.6],
+                                borderColor: chartColors.lightBlue,
+                                backgroundColor: chartColors.lightBlue + '33',
+                                fill: false,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Core PCE (변동성 낮음)',
+                                data: [2.5, 2.6, 2.5, 2.7, 2.6, 2.6],
+                                borderColor: chartColors.darkBlue,
+                                backgroundColor: chartColors.darkBlue + '33',
+                                fill: false,
+                                tension: 0.1,
+                                borderDash: [5, 5]
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: '연간 상승률 (%)'
+                                }
+                            }
+                        },
+                        ...tooltipPluginConfig
+                    }
+                });
+            }
+
+            const nfpCtx = document.getElementById('nfpChart');
+            if (nfpCtx) {
+                const nfpData = [250, 120, -10, 80, 150, 210];
+                const nfpColors = nfpData.map(val => {
+                    if (val > 200) return chartColors.red;
+                    if (val < 50) return chartColors.red;
+                    return chartColors.mediumBlue;
+                });
+
+                new Chart(nfpCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+                        datasets: [{
+                            label: '월별 고용 변화 (천 명)',
+                            data: nfpData,
+                            backgroundColor: nfpColors,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '변화량 (천 명)'
+                                }
+                            }
+                        },
+                        ...tooltipPluginConfig
+                    }
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
