@@ -1,0 +1,1139 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>석유와 세계 시장: 인터랙티브 가이드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .nav-link {
+            @apply px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors;
+        }
+        .nav-link.active {
+            @apply bg-blue-600 text-white hover:bg-blue-700 hover:text-white;
+        }
+        .content-section {
+            @apply hidden;
+        }
+        .content-section.active {
+            @apply block;
+        }
+        .card {
+            @apply bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300;
+        }
+        .interactive-btn {
+            @apply w-full text-left px-5 py-3 rounded-lg font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all;
+        }
+        .interactive-btn.active {
+            @apply bg-blue-600 text-white;
+        }
+        .tab-btn {
+            @apply px-4 py-2 font-medium text-gray-600 rounded-t-lg hover:bg-gray-100;
+        }
+        .tab-btn.active {
+            @apply border-b-2 border-blue-600 text-blue-600 bg-white;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+                max-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Chosen Palette: Warm Neutrals (bg-gray-50/bg-f8f9fa, text-gray-800) with Muted Blue Accents (bg-blue-600) -->
+    <!-- Application Structure Plan: A tab-based Single Page Application (SPA) structure was designed. Navigation (Home, Impact, Benchmarks, Factors, Players) controls the visibility of corresponding <section> elements. This thematic, non-linear structure is superior to the report's linear text, allowing users to jump directly to topics of interest. Interactivity is central: (1) Impact: Clickable cards/buttons update a text block. (2) Benchmarks: Donut chart for proportions + clickable table rows to show details. (3) Factors: Donut chart + interactive "scenario" buttons updating a text block. (4) Players: Donut chart + tabbed interface for text. This design encourages exploration and breaks down complex topics into manageable, interactive components. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: Economic Impact -> Goal: Organize/Inform -> Viz: Interactive Buttons (HTML/JS) -> Interaction: Click button -> Show text. Justification: Cleaner than 4 static text blocks.
+        - Report Info: 3 Benchmarks -> Goal: Inform/Compare -> Viz: Donut Chart (Chart.js) + Interactive Table (HTML/JS) -> Interaction: View proportions; Click table row -> Show details. Justification: Donut gives high-level overview, table provides details on click.
+        - Report Info: Price Factors -> Goal: Inform/Organize -> Viz: Donut Chart (Chart.js) + Interactive Buttons (HTML/JS) -> Interaction: Click "Demand Up" etc. -> Show scenario text. Justification: Visualizes conceptual factors and provides simple "what-if" scenarios.
+        - Report Info: Key Players -> Goal: Inform/Organize -> Viz: Donut Chart (Chart.js, conceptual data) + Tabs (HTML/JS) -> Interaction: Click tab (OPEC, IOC, etc) -> Show text. Justification: Chart gives production context, tabs organize player descriptions.
+        - All charts use Chart.js on Canvas, respecting container constraints. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <div class="min-h-screen">
+        <header class="bg-white shadow-md sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col sm:flex-row justify-between items-center py-4">
+                    <h1 class="text-2xl font-bold text-gray-900">석유와 세계 시장: 인터랙티브 가이드</h1>
+                    <nav class="mt-2 sm:mt-0 flex flex-wrap justify-center">
+                        <a href="#" class="nav-link active" data-target="section-home">소개</a>
+                        <a href="#" class="nav-link" data-target="section-impact">경제적 영향</a>
+                        <a href="#" class="nav-link" data-target="section-benchmarks">주요 기준 유종</a>
+                        <a href="#" class="nav-link" data-target="section-factors">가격 결정 원리</a>
+                        <a href="#" class="nav-link" data-target="section-players">주요 시장 참여자</a>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+            
+            <section id="section-home" class="content-section active">
+                <div class="card text-center">
+                    <h2 class="text-3xl font-bold text-blue-600 mb-4">석유, 현대 문명의 검은 피</h2>
+                    <p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
+                        석유(원유)는 현대 문명의 근간을 이루는 가장 중요한 에너지원이자 산업 원료입니다. 석유는 단순히 자동차 연료를 넘어 석유화학 제품(플라스틱, 섬유 등)의 주재료로 사용되므로, 그 가격 변동은 세계 경제 전체에 막대한 영향을 미칩니다.
+                    </p>
+                    <p class="mt-6 text-md text-gray-600">
+                        이 가이드는 석유 시장의 기본 원리를 이해하는 데 도움을 드립니다.<br>상단의 탭을 클릭하여 석유가 세계 경제에 미치는 영향, 가격 결정 원리 등을 탐색해 보세요.
+                    </p>
+                </div>
+
+                <!-- LLM Feature 1: Terminology Explainer -->
+                <div class="card mt-8 pt-6 border-t border-gray-200 text-left">
+                    <h3 class="text-2xl font-semibold text-blue-700 mb-4">✨ 석유 시장 용어 설명</h3>
+                    <p class="text-sm text-gray-500 mb-3">궁금한 석유 시장 용어(예: 셰일가스, 오일쇼크, 콘탱고)를 입력하시면 간단히 설명해 드립니다. (Gemini API 사용)</p>
+                    <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+                        <input type="text" id="termInput" class="flex-grow p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="용어를 입력하세요 (예: 셰일가스)">
+                        <button id="explainTermBtn" class="bg-blue-600 text-white px-5 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex-shrink-0">
+                            ✨ 설명 요청
+                        </button>
+                    </div>
+                    <div id="termOutput" class="mt-4 p-4 bg-gray-100 rounded-lg min-h-[50px] text-gray-800 leading-relaxed">
+                        설명 결과가 여기에 표시됩니다.
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-impact" class="content-section">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">석유가 세계 경제에 미치는 영향</h2>
+                    <p class="text-lg text-gray-600">석유는 경제의 거의 모든 부문에 영향을 미칩니다. 아래 버튼을 클릭하여 각 항목의 상세 내용을 확인해 보세요.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <button class="impact-btn" data-target="impact-energy">1. 에너지원 및 동력</button>
+                    <button class="impact-btn" data-target="impact-industry">2. 산업 원료</button>
+                    <button class="impact-btn" data-target="impact-inflation">3. 인플레이션 유발</button>
+                    <button class="impact-btn" data-target="impact-geopolitics">4. 국제 정세</button>
+                </div>
+                <div id="impact-details" class="card min-h-[150px] flex items-center justify-center">
+                    <p class="text-lg text-gray-700 leading-relaxed" id="impact-text">
+                        알고 싶은 항목을 선택하세요.
+                    </p>
+                </div>
+            </section>
+
+            <section id="section-benchmarks" class="content-section">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">국제 유가의 주요 기준 유종</h2>
+                    <p class="text-lg text-gray-600">세계 석유 시장은 세 가지 주요 기준 유종(벤치마크)을 중심으로 가격이 형성됩니다.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card flex flex-col justify-center">
+                        <h3 class="text-xl font-bold text-center mb-4">세계 3대 기준 유종</h3>
+                        <div class="chart-container">
+                            <canvas id="benchmarkChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-xl font-bold text-center mb-4">기준 유종 비교</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-max text-left">
+                                <thead class="border-b bg-gray-50">
+                                    <tr>
+                                        <th class="p-3 font-semibold">기준 유종</th>
+                                        <th class="p-3 font-semibold">약자</th>
+                                        <th class="p-3 font-semibold">주요 생산 지역</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="benchmark-row border-b hover:bg-gray-100 cursor-pointer" data-target="wti">
+                                        <td class="p-3 font-medium">서부 텍사스산 원유</td>
+                                        <td class="p-3">WTI</td>
+                                        <td class="p-3">미국 (NYMEX 거래)</td>
+                                    </tr>
+                                    <tr class="benchmark-row border-b hover:bg-gray-100 cursor-pointer" data-target="brent">
+                                        <td class="p-3 font-medium">브렌트유</td>
+                                        <td class="p-3">Brent</td>
+                                        <td class="p-3">북해 (ICE 거래)</td>
+                                    </tr>
+                                    <tr class="benchmark-row hover:bg-gray-100 cursor-pointer" data-target="dubai">
+                                        <td class="p-3 font-medium">두바이유</td>
+                                        <td class="p-3">Dubai/Oman</td>
+                                        <td class="p-3">중동 (페르시아만)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="benchmark-details-container" class="mt-4 p-4 bg-gray-50 rounded-lg min-h-[100px]">
+                            <p id="benchmark-details" class="text-gray-700">표의 행을 클릭하여 각 유종의 상세 특징을 확인하세요.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-factors" class="content-section">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">유가 결정의 기본 원리</h2>
+                    <p class="text-lg text-gray-600">국제 유가는 기본적으로 수요와 공급의 원칙에 따라 결정되지만, 정치적, 심리적 요인도 크게 작용합니다.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card">
+                        <h3 class="text-xl font-bold text-center mb-4">유가 변동 요인 (개념적 비중)</h3>
+                        <div class="chart-container">
+                            <canvas id="factorsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-xl font-bold text-center mb-4">인터랙티브 시나리오</h3>
+                        <p class="text-center text-gray-600 mb-4">버튼을 클릭하여 각 요인이 유가에 미치는 영향을 확인해 보세요.</p>
+                        <div class="space-y-3 mb-4">
+                            <button class="factor-btn interactive-btn" data-target="demand-up">수요 측면: 세계 경제 호황 📈</button>
+                            <button class="factor-btn interactive-btn" data-target="supply-down">공급 측면: OPEC+ 감산 📉</button>
+                            <button class="factor-btn interactive-btn" data-target="geopolitics">공급 측면: 지정학적 리스크 ⚠️</button>
+                            <button class="factor-btn interactive-btn" data-target="speculation">시장 심리: 투기 자금 유입 🏦</button>
+                        </div>
+                        <div id="price-scenario-container" class="mt-4 p-4 bg-gray-50 rounded-lg min-h-[120px]">
+                            <p id="price-scenario-text" class="text-gray-700 leading-relaxed">
+                                각 시나리오가 유가에 어떤 영향을 미치는지 살펴보세요.
+                            </p>
+                        </div>
+
+                        <!-- LLM Feature 2: Price Impact Analysis -->
+                        <div class="mt-8 pt-6 border-t border-gray-200 text-left">
+                            <h3 class="text-xl font-bold text-indigo-700 mb-4">✨ 나만의 가격 영향 분석</h3>
+                            <p class="text-sm text-gray-500 mb-3">특정 사건이 유가에 미칠 영향을 분석해 드립니다. (Gemini API 사용)</p>
+                            <div class="flex flex-col space-y-3">
+                                <input type="text" id="scenarioInput" class="p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="시나리오 입력 (예: 주요 수송로 봉쇄)">
+                                <button id="analyzeScenarioBtn" class="bg-indigo-600 text-white px-5 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+                                    ✨ 영향 분석 요청
+                                </button>
+                            </div>
+                            <div id="scenarioOutput" class="mt-4 p-4 bg-gray-100 rounded-lg min-h-[80px] text-gray-800 leading-relaxed">
+                                분석 결과가 여기에 표시됩니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-players" class="content-section">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">석유 시장의 주요 참여자</h2>
+                    <p class="text-lg text-gray-600">석유 시장은 소수의 거대 조직과 기업, 그리고 다수의 소비국에 의해 좌우됩니다.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card">
+                        <h3 class="text-xl font-bold text-center mb-4">세계 원유 생산 비중 (예시)</h3>
+                        <div class="chart-container">
+                            <canvas id="playersChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-xl font-bold text-center mb-4">참여자별 상세 정보</h3>
+                        <div class="border-b border-gray-200">
+                            <nav class="-mb-px flex justify-center space-x-4" aria-label="Tabs">
+                                <button class="player-tab tab-btn active" data-target="opec">OPEC+ (산유국 그룹)</button>
+                                <button class="player-tab tab-btn" data-target="ioc">국제 석유 회사 (IOC)</button>
+                                <button class="player-tab tab-btn" data-target="consumers">주요 소비국</button>
+                            </nav>
+                        </div>
+                        <div id="player-details" class="mt-4 p-4 bg-white rounded-lg min-h-[200px]">
+                            <p id="player-text" class="text-gray-700 leading-relaxed">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center py-6 mt-12 bg-gray-100 border-t">
+            <p class="text-gray-600">인터랙티브 리포트 | 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        const apiKey = "";
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        async function fetchLLMResponse(userPrompt, systemInstruction, maxRetries = 5) {
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+            };
+
+            let lastError = null;
+            for (let i = 0; i < maxRetries; i++) {
+                const delay = Math.pow(2, i) * 1000;
+                await new Promise(resolve => setTimeout(resolve, delay));
+
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        lastError = new Error(`HTTP error! status: ${response.status}`);
+                        continue;
+                    }
+
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                        return text;
+                    } else {
+                        lastError = new Error("LLM response missing text.");
+                        continue;
+                    }
+                } catch (error) {
+                    lastError = error;
+                    continue;
+                }
+            }
+            console.error("API 호출 실패:", lastError);
+            return "요청 처리에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+
+            const impactButtons = document.querySelectorAll('.impact-btn');
+            const impactText = document.getElementById('impact-text');
+
+            const benchmarkRows = document.querySelectorAll('.benchmark-row');
+            const benchmarkDetails = document.getElementById('benchmark-details');
+
+            const factorButtons = document.querySelectorAll('.factor-btn');
+            const priceScenarioText = document.getElementById('price-scenario-text');
+
+            const playerTabs = document.querySelectorAll('.player-tab');
+            const playerText = document.getElementById('player-text');
+
+            // LLM elements
+            const termInput = document.getElementById('termInput');
+            const explainTermBtn = document.getElementById('explainTermBtn');
+            const termOutput = document.getElementById('termOutput');
+            const scenarioInput = document.getElementById('scenarioInput');
+            const analyzeScenarioBtn = document.getElementById('analyzeScenarioBtn');
+            const scenarioOutput = document.getElementById('scenarioOutput');
+
+
+            const impactData = {
+                'impact-energy': '<strong>에너지원 및 동력:</strong> 석유는 여전히 전 세계 운송 수단(자동차, 선박, 항공기)의 주된 연료이며, 산업 시설을 가동하는 데 필수적인 에너지원입니다.',
+                'impact-industry': '<strong>산업 원료:</strong> 원유를 정제하여 얻는 나프타(Naphtha)는 플라스틱, 합성 고무, 화학섬유 등 수많은 석유화학 제품의 기초 원료입니다.',
+                'impact-inflation': '<strong>인플레이션 유발:</strong> 유가가 상승하면 생산 및 운송 비용이 전반적으로 올라, 최종 소비재 가격 상승(비용 인상 인플레이션)으로 이어져 경기 침체를 유발할 수 있습니다. (오일 쇼크)',
+                'impact-geopolitics': '<strong>국제 정세:</strong> 석유는 지정학적 무기로 활용되기도 하며, 주요 산유국의 정치적 불안정은 즉각적으로 유가 변동을 일으켜 세계 정세의 불안정성을 높입니다.'
+            };
+
+            const benchmarkData = {
+                'wti': '<strong>WTI (서부 텍사스산 원유):</strong> 품질이 뛰어나고 황 함량이 낮아 정제하기 쉬운 경질(Light) 저유황(Sweet) 유종입니다. 주로 미국 국내 가격을 선도하며, 선물 시장에서 활발히 거래됩니다.',
+                'brent': '<strong>브렌트유 (Brent):</strong> 유럽 및 아프리카 지역의 유가 기준입니다. WTI와 유사하게 경질 저유황이지만, 해상 운송이 용이하여 국제 유가를 대표합니다.',
+                'dubai': '<strong>두바이유 (Dubai/Oman):</strong> 아시아 지역의 유가 기준입니다. WTI나 브렌트유보다 품질이 떨어지는 중질(Medium) 고유황(Sour) 유종이 많으며, 한국을 포함한 아시아 국가들이 주로 수입합니다.'
+            };
+
+            const factorData = {
+                'demand-up': '<strong>시나리오 (수요 증가):</strong> 경기가 호황이면 산업 생산과 운송이 증가하여 석유 수요가 상승합니다. 이는 유가 상승의 강력한 요인이 됩니다.',
+                'supply-down': '<strong>시나리오 (공급 감소):</strong> OPEC+와 같은 주요 산유국들이 생산량을 줄이기로 합의(감산)하면, 시장에 공급되는 석유가 줄어들어 유가가 상승합니다.',
+                'geopolitics': '<strong>시나리오 (지정학적 리스크):</strong> 중동 지역의 전쟁, 내전, 분쟁, 주요 수송로의 불안정 등은 공급 차질에 대한 우려를 즉각적으로 반영하여 유가를 급등시킵니다.',
+                'speculation': '<strong>시나리오 (시장 심리):</strong> 원유는 현물 외에 선물 시장에서 대규모로 거래됩니다. 미래에 유가가 오를 것이라는 기대(투기 자금 유입)만으로도 단기적인 유가 변동성이 크게 확대될 수 있습니다.'
+            };
+
+            const playerData = {
+                'opec': '<strong>OPEC+ (산유국 그룹):</strong> 사우디아라비아를 중심으로 한 OPEC(석유수출국기구)과 러시아 등 비OPEC 주요 산유국 연합(OPEC+)을 말합니다. 이들은 세계 원유 생산량의 상당 부분을 차지하며, 이들의 감산 또는 증산 결정은 국제 유가를 움직이는 핵심 요인입니다.',
+                'ioc': '<strong>국제 석유 회사 (IOC):</strong> 엑슨 모빌(Exxon Mobil), 쉘(Shell), 쉐브론(Chevron), BP 등 소위 \'슈퍼메이저\'라 불리는 거대 석유 기업들입니다. 이들은 탐사, 개발, 생산부터 운송, 정제, 판매까지 모든 단계(수직 계열화)에 참여하며 시장을 움직입니다.',
+                'consumers': '<strong>주요 소비국:</strong> 세계 최대 소비국인 미국과 급격히 소비를 늘리고 있는 중국과 인도 등은 막대한 수요를 바탕으로 유가에 영향을 미칩니다. 특히 미국의 원유 재고량이나 셰일 오일 생산량은 시장의 중요한 지표로 작용합니다.'
+            };
+
+            function updateActiveState(items, currentItem, activeClass) {
+                items.forEach(item => {
+                    item.classList.remove(activeClass);
+                });
+                currentItem.classList.add(activeClass);
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.dataset.target;
+                    
+                    updateActiveState(navLinks, link, 'active');
+
+                    sections.forEach(section => {
+                        if (section.id === targetId) {
+                            section.classList.add('active');
+                            section.classList.remove('hidden');
+                        } else {
+                            section.classList.add('hidden');
+                            section.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            impactButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetData = button.dataset.target;
+                    impactText.innerHTML = impactData[targetData];
+                    updateActiveState(impactButtons, button, 'active');
+                });
+            });
+            impactButtons[0].click();
+
+            benchmarkRows.forEach(row => {
+                row.addEventListener('click', () => {
+                    const targetData = row.dataset.target;
+                    benchmarkDetails.innerHTML = benchmarkData[targetData];
+                    benchmarkRows.forEach(r => r.classList.remove('bg-blue-100'));
+                    row.classList.add('bg-blue-100');
+                });
+            });
+
+            factorButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetData = button.dataset.target;
+                    priceScenarioText.innerHTML = factorData[targetData];
+                    updateActiveState(factorButtons, button, 'active');
+                });
+            });
+            factorButtons[0].click();
+
+            playerTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetData = tab.dataset.target;
+                    playerText.innerHTML = playerData[targetData];
+                    updateActiveState(playerTabs, tab, 'active');
+                });
+            });
+            playerTabs[0].click();
+
+            // LLM Function 1: Terminology Explainer
+            explainTermBtn.addEventListener('click', async () => {
+                const term = termInput.value.trim();
+
+                if (!term) {
+                    termOutput.innerHTML = '<strong class="text-red-500">설명할 용어를 입력해 주세요.</strong>';
+                    return;
+                }
+
+                termOutput.innerHTML = `<div class="flex items-center space-x-2 text-blue-600"><span class="animate-spin">🔄</span><span>'${term}'에 대한 설명을 분석 중입니다...</span></div>`;
+                
+                const systemPrompt = "당신은 석유 및 에너지 시장의 전문가입니다. 사용자가 요청한 용어에 대해 간결하고 정확하게, 한국어로 설명해 주세요. 최대 3~4문장으로 작성하고, 출처 인용을 반드시 포함합니다.";
+                const userQuery = `${term}의 의미는 무엇인가요?`;
+
+                const result = await fetchLLMResponse(userQuery, systemPrompt);
+                termOutput.innerHTML = result;
+            });
+
+            // LLM Function 2: Price Impact Analysis
+            analyzeScenarioBtn.addEventListener('click', async () => {
+                const scenario = scenarioInput.value.trim();
+
+                if (!scenario) {
+                    scenarioOutput.innerHTML = '<strong class="text-red-500">분석할 시나리오를 입력해 주세요.</strong>';
+                    return;
+                }
+
+                scenarioOutput.innerHTML = `<div class="flex items-center space-x-2 text-indigo-600"><span class="animate-spin">🔄</span><span>'${scenario}'가 유가에 미칠 영향을 분석 중입니다...</span></div>`;
+                
+                const systemPrompt = "당신은 글로벌 에너지 시장 전략가입니다. 사용자가 제시한 시나리오가 국제 유가(WTI, 브렌트유 기준)에 미칠 잠재적 영향을 '유가 전망'과 '주요 이유'로 나누어 한국어로 간결하게 분석해 주세요. 유가 전망은 '상승 요인', '하락 요인', '중립적' 중 하나로 명확히 제시합니다. 최대 5문장으로 작성하고, 출처 인용을 반드시 포함합니다.";
+                const userQuery = `${scenario} 시나리오가 국제 유가에 미치는 영향은 무엇인가요?`;
+
+                const result = await fetchLLMResponse(userQuery, systemPrompt);
+                scenarioOutput.innerHTML = result;
+            });
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            };
+
+            new Chart(document.getElementById('benchmarkChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['WTI (미국)', '브렌트유 (북해)', '두바이유 (중동)'],
+                    datasets: [{
+                        data: [33.3, 33.3, 33.3],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    plugins: {
+                        ...chartOptions.plugins,
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    return context.label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('factorsChart').getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: ['수요 측면 (경제 성장)', '공급 측면 (생산량, 리스크)', '시장 심리 (투기)'],
+                    datasets: [{
+                        data: [40, 40, 20],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    plugins: {
+                        ...chartOptions.plugins,
+                         tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    let value = context.parsed;
+                                    return label + ' 약 ' + value + '% 비중';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('playersChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['OPEC+ (산유국 연합)', '미국 (셰일 오일 등)', '기타 비OPEC 국가'],
+                    datasets: [{
+                        data: [45, 20, 35],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                     ...chartOptions,
+                     plugins: {
+                        ...chartOptions.plugins,
+                         tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    let value = context.parsed;
+                                    return label + ' 약 ' + value + '% 비중';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>석유와 세계 시장: 인터랙티브 가이드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .nav-link {
+            @apply px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors;
+        }
+        .nav-link.active {
+            @apply bg-blue-600 text-white hover:bg-blue-700 hover:text-white;
+        }
+        .content-section {
+            @apply hidden;
+        }
+        .content-section.active {
+            @apply block;
+        }
+        .card {
+            @apply bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300;
+        }
+        .interactive-btn {
+            @apply w-full text-left px-5 py-3 rounded-lg font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all;
+        }
+        .interactive-btn.active {
+            @apply bg-blue-600 text-white;
+        }
+        .tab-btn {
+            @apply px-4 py-2 font-medium text-gray-600 rounded-t-lg hover:bg-gray-100;
+        }
+        .tab-btn.active {
+            @apply border-b-2 border-blue-600 text-blue-600 bg-white;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+                max-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Chosen Palette: Warm Neutrals (bg-gray-50/bg-f8f9fa, text-gray-800) with Muted Blue Accents (bg-blue-600) -->
+    <!-- Application Structure Plan: A tab-based Single Page Application (SPA) structure was designed. Navigation (Home, Impact, Benchmarks, Factors, Players) controls the visibility of corresponding <section> elements. This thematic, non-linear structure is superior to the report's linear text, allowing users to jump directly to topics of interest. Interactivity is central: (1) Impact: Clickable cards/buttons update a text block. (2) Benchmarks: Donut chart for proportions + clickable table rows to show details. (3) Factors: Donut chart + interactive "scenario" buttons updating a text block. (4) Players: Donut chart + tabbed interface for text. This design encourages exploration and breaks down complex topics into manageable, interactive components. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: Economic Impact -> Goal: Organize/Inform -> Viz: Interactive Buttons (HTML/JS) -> Interaction: Click button -> Show text. Justification: Cleaner than 4 static text blocks.
+        - Report Info: 3 Benchmarks -> Goal: Inform/Compare -> Viz: Donut Chart (Chart.js) + Interactive Table (HTML/JS) -> Interaction: View proportions; Click table row -> Show details. Justification: Donut gives high-level overview, table provides details on click.
+        - Report Info: Price Factors -> Goal: Inform/Organize -> Viz: Donut Chart (Chart.js) + Interactive Buttons (HTML/JS) -> Interaction: Click "Demand Up" etc. -> Show scenario text. Justification: Visualizes conceptual factors and provides simple "what-if" scenarios.
+        - Report Info: Key Players -> Goal: Inform/Organize -> Viz: Donut Chart (Chart.js, conceptual data) + Tabs (HTML/JS) -> Interaction: Click tab (OPEC, IOC, etc) -> Show text. Justification: Chart gives production context, tabs organize player descriptions.
+        - All charts use Chart.js on Canvas, respecting container constraints. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <div class="min-h-screen">
+        <header class="bg-white shadow-md sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col sm:flex-row justify-between items-center py-4">
+                    <h1 class="text-2xl font-bold text-gray-900">석유와 세계 시장: 인터랙티브 가이드</h1>
+                    <nav class="mt-2 sm:mt-0 flex flex-wrap justify-center">
+                        <a href="#" class="nav-link active" data-target="section-home">소개</a>
+                        <a href="#" class="nav-link" data-target="section-impact">경제적 영향</a>
+                        <a href="#" class="nav-link" data-target="section-benchmarks">주요 기준 유종</a>
+                        <a href="#" class="nav-link" data-target="section-factors">가격 결정 원리</a>
+                        <a href="#" class="nav-link" data-target="section-players">주요 시장 참여자</a>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+            
+            <section id="section-home" class="content-section active">
+                <div class="card text-center">
+                    <h2 class="text-3xl font-bold text-blue-600 mb-4">석유, 현대 문명의 검은 피</h2>
+                    <p class="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
+                        석유(원유)는 현대 문명의 근간을 이루는 가장 중요한 에너지원이자 산업 원료입니다. 석유는 단순히 자동차 연료를 넘어 석유화학 제품(플라스틱, 섬유 등)의 주재료로 사용되므로, 그 가격 변동은 세계 경제 전체에 막대한 영향을 미칩니다.
+                    </p>
+                    <p class="mt-6 text-md text-gray-600">
+                        이 가이드는 석유 시장의 기본 원리를 이해하는 데 도움을 드립니다.<br>상단의 탭을 클릭하여 석유가 세계 경제에 미치는 영향, 가격 결정 원리 등을 탐색해 보세요.
+                    </p>
+                </div>
+
+                <!-- LLM Feature 1: Terminology Explainer -->
+                <div class="card mt-8 pt-6 border-t border-gray-200 text-left">
+                    <h3 class="text-2xl font-semibold text-blue-700 mb-4">✨ 석유 시장 용어 설명</h3>
+                    <p class="text-sm text-gray-500 mb-3">궁금한 석유 시장 용어(예: 셰일가스, 오일쇼크, 콘탱고)를 입력하시면 간단히 설명해 드립니다. (Gemini API 사용)</p>
+                    <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+                        <input type="text" id="termInput" class="flex-grow p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="용어를 입력하세요 (예: 셰일가스)">
+                        <button id="explainTermBtn" class="bg-blue-600 text-white px-5 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex-shrink-0">
+                            ✨ 설명 요청
+                        </button>
+                    </div>
+                    <div id="termOutput" class="mt-4 p-4 bg-gray-100 rounded-lg min-h-[50px] text-gray-800 leading-relaxed">
+                        설명 결과가 여기에 표시됩니다.
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-impact" class="content-section">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">석유가 세계 경제에 미치는 영향</h2>
+                    <p class="text-lg text-gray-600">석유는 경제의 거의 모든 부문에 영향을 미칩니다. 아래 버튼을 클릭하여 각 항목의 상세 내용을 확인해 보세요.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <button class="impact-btn" data-target="impact-energy">1. 에너지원 및 동력</button>
+                    <button class="impact-btn" data-target="impact-industry">2. 산업 원료</button>
+                    <button class="impact-btn" data-target="impact-inflation">3. 인플레이션 유발</button>
+                    <button class="impact-btn" data-target="impact-geopolitics">4. 국제 정세</button>
+                </div>
+                <div id="impact-details" class="card min-h-[150px] flex items-center justify-center">
+                    <p class="text-lg text-gray-700 leading-relaxed" id="impact-text">
+                        알고 싶은 항목을 선택하세요.
+                    </p>
+                </div>
+            </section>
+
+            <section id="section-benchmarks" class="content-section">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">국제 유가의 주요 기준 유종</h2>
+                    <p class="text-lg text-gray-600">세계 석유 시장은 세 가지 주요 기준 유종(벤치마크)을 중심으로 가격이 형성됩니다.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card flex flex-col justify-center">
+                        <h3 class="text-xl font-bold text-center mb-4">세계 3대 기준 유종</h3>
+                        <div class="chart-container">
+                            <canvas id="benchmarkChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-xl font-bold text-center mb-4">기준 유종 비교</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full min-w-max text-left">
+                                <thead class="border-b bg-gray-50">
+                                    <tr>
+                                        <th class="p-3 font-semibold">기준 유종</th>
+                                        <th class="p-3 font-semibold">약자</th>
+                                        <th class="p-3 font-semibold">주요 생산 지역</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="benchmark-row border-b hover:bg-gray-100 cursor-pointer" data-target="wti">
+                                        <td class="p-3 font-medium">서부 텍사스산 원유</td>
+                                        <td class="p-3">WTI</td>
+                                        <td class="p-3">미국 (NYMEX 거래)</td>
+                                    </tr>
+                                    <tr class="benchmark-row border-b hover:bg-gray-100 cursor-pointer" data-target="brent">
+                                        <td class="p-3 font-medium">브렌트유</td>
+                                        <td class="p-3">Brent</td>
+                                        <td class="p-3">북해 (ICE 거래)</td>
+                                    </tr>
+                                    <tr class="benchmark-row hover:bg-gray-100 cursor-pointer" data-target="dubai">
+                                        <td class="p-3 font-medium">두바이유</td>
+                                        <td class="p-3">Dubai/Oman</td>
+                                        <td class="p-3">중동 (페르시아만)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="benchmark-details-container" class="mt-4 p-4 bg-gray-50 rounded-lg min-h-[100px]">
+                            <p id="benchmark-details" class="text-gray-700">표의 행을 클릭하여 각 유종의 상세 특징을 확인하세요.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-factors" class="content-section">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">유가 결정의 기본 원리</h2>
+                    <p class="text-lg text-gray-600">국제 유가는 기본적으로 수요와 공급의 원칙에 따라 결정되지만, 정치적, 심리적 요인도 크게 작용합니다.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card">
+                        <h3 class="text-xl font-bold text-center mb-4">유가 변동 요인 (개념적 비중)</h3>
+                        <div class="chart-container">
+                            <canvas id="factorsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-xl font-bold text-center mb-4">인터랙티브 시나리오</h3>
+                        <p class="text-center text-gray-600 mb-4">버튼을 클릭하여 각 요인이 유가에 미치는 영향을 확인해 보세요.</p>
+                        <div class="space-y-3 mb-4">
+                            <button class="factor-btn interactive-btn" data-target="demand-up">수요 측면: 세계 경제 호황 📈</button>
+                            <button class="factor-btn interactive-btn" data-target="supply-down">공급 측면: OPEC+ 감산 📉</button>
+                            <button class="factor-btn interactive-btn" data-target="geopolitics">공급 측면: 지정학적 리스크 ⚠️</button>
+                            <button class="factor-btn interactive-btn" data-target="speculation">시장 심리: 투기 자금 유입 🏦</button>
+                        </div>
+                        <div id="price-scenario-container" class="mt-4 p-4 bg-gray-50 rounded-lg min-h-[120px]">
+                            <p id="price-scenario-text" class="text-gray-700 leading-relaxed">
+                                각 시나리오가 유가에 어떤 영향을 미치는지 살펴보세요.
+                            </p>
+                        </div>
+
+                        <!-- LLM Feature 2: Price Impact Analysis -->
+                        <div class="mt-8 pt-6 border-t border-gray-200 text-left">
+                            <h3 class="text-xl font-bold text-indigo-700 mb-4">✨ 나만의 가격 영향 분석</h3>
+                            <p class="text-sm text-gray-500 mb-3">특정 사건이 유가에 미칠 영향을 분석해 드립니다. (Gemini API 사용)</p>
+                            <div class="flex flex-col space-y-3">
+                                <input type="text" id="scenarioInput" class="p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500" placeholder="시나리오 입력 (예: 주요 수송로 봉쇄)">
+                                <button id="analyzeScenarioBtn" class="bg-indigo-600 text-white px-5 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+                                    ✨ 영향 분석 요청
+                                </button>
+                            </div>
+                            <div id="scenarioOutput" class="mt-4 p-4 bg-gray-100 rounded-lg min-h-[80px] text-gray-800 leading-relaxed">
+                                분석 결과가 여기에 표시됩니다.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="section-players" class="content-section">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold mb-2">석유 시장의 주요 참여자</h2>
+                    <p class="text-lg text-gray-600">석유 시장은 소수의 거대 조직과 기업, 그리고 다수의 소비국에 의해 좌우됩니다.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card">
+                        <h3 class="text-xl font-bold text-center mb-4">세계 원유 생산 비중 (예시)</h3>
+                        <div class="chart-container">
+                            <canvas id="playersChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3 class="text-xl font-bold text-center mb-4">참여자별 상세 정보</h3>
+                        <div class="border-b border-gray-200">
+                            <nav class="-mb-px flex justify-center space-x-4" aria-label="Tabs">
+                                <button class="player-tab tab-btn active" data-target="opec">OPEC+ (산유국 그룹)</button>
+                                <button class="player-tab tab-btn" data-target="ioc">국제 석유 회사 (IOC)</button>
+                                <button class="player-tab tab-btn" data-target="consumers">주요 소비국</button>
+                            </nav>
+                        </div>
+                        <div id="player-details" class="mt-4 p-4 bg-white rounded-lg min-h-[200px]">
+                            <p id="player-text" class="text-gray-700 leading-relaxed">
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="text-center py-6 mt-12 bg-gray-100 border-t">
+            <p class="text-gray-600">인터랙티브 리포트 | 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        const apiKey = "";
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        async function fetchLLMResponse(userPrompt, systemInstruction, maxRetries = 5) {
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+            };
+
+            let lastError = null;
+            for (let i = 0; i < maxRetries; i++) {
+                const delay = Math.pow(2, i) * 1000;
+                await new Promise(resolve => setTimeout(resolve, delay));
+
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        lastError = new Error(`HTTP error! status: ${response.status}`);
+                        continue;
+                    }
+
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (text) {
+                        return text;
+                    } else {
+                        lastError = new Error("LLM response missing text.");
+                        continue;
+                    }
+                } catch (error) {
+                    lastError = error;
+                    continue;
+                }
+            }
+            console.error("API 호출 실패:", lastError);
+            return "요청 처리에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.content-section');
+
+            const impactButtons = document.querySelectorAll('.impact-btn');
+            const impactText = document.getElementById('impact-text');
+
+            const benchmarkRows = document.querySelectorAll('.benchmark-row');
+            const benchmarkDetails = document.getElementById('benchmark-details');
+
+            const factorButtons = document.querySelectorAll('.factor-btn');
+            const priceScenarioText = document.getElementById('price-scenario-text');
+
+            const playerTabs = document.querySelectorAll('.player-tab');
+            const playerText = document.getElementById('player-text');
+
+            // LLM elements
+            const termInput = document.getElementById('termInput');
+            const explainTermBtn = document.getElementById('explainTermBtn');
+            const termOutput = document.getElementById('termOutput');
+            const scenarioInput = document.getElementById('scenarioInput');
+            const analyzeScenarioBtn = document.getElementById('analyzeScenarioBtn');
+            const scenarioOutput = document.getElementById('scenarioOutput');
+
+
+            const impactData = {
+                'impact-energy': '<strong>에너지원 및 동력:</strong> 석유는 여전히 전 세계 운송 수단(자동차, 선박, 항공기)의 주된 연료이며, 산업 시설을 가동하는 데 필수적인 에너지원입니다.',
+                'impact-industry': '<strong>산업 원료:</strong> 원유를 정제하여 얻는 나프타(Naphtha)는 플라스틱, 합성 고무, 화학섬유 등 수많은 석유화학 제품의 기초 원료입니다.',
+                'impact-inflation': '<strong>인플레이션 유발:</strong> 유가가 상승하면 생산 및 운송 비용이 전반적으로 올라, 최종 소비재 가격 상승(비용 인상 인플레이션)으로 이어져 경기 침체를 유발할 수 있습니다. (오일 쇼크)',
+                'impact-geopolitics': '<strong>국제 정세:</strong> 석유는 지정학적 무기로 활용되기도 하며, 주요 산유국의 정치적 불안정은 즉각적으로 유가 변동을 일으켜 세계 정세의 불안정성을 높입니다.'
+            };
+
+            const benchmarkData = {
+                'wti': '<strong>WTI (서부 텍사스산 원유):</strong> 품질이 뛰어나고 황 함량이 낮아 정제하기 쉬운 경질(Light) 저유황(Sweet) 유종입니다. 주로 미국 국내 가격을 선도하며, 선물 시장에서 활발히 거래됩니다.',
+                'brent': '<strong>브렌트유 (Brent):</strong> 유럽 및 아프리카 지역의 유가 기준입니다. WTI와 유사하게 경질 저유황이지만, 해상 운송이 용이하여 국제 유가를 대표합니다.',
+                'dubai': '<strong>두바이유 (Dubai/Oman):</strong> 아시아 지역의 유가 기준입니다. WTI나 브렌트유보다 품질이 떨어지는 중질(Medium) 고유황(Sour) 유종이 많으며, 한국을 포함한 아시아 국가들이 주로 수입합니다.'
+            };
+
+            const factorData = {
+                'demand-up': '<strong>시나리오 (수요 증가):</strong> 경기가 호황이면 산업 생산과 운송이 증가하여 석유 수요가 상승합니다. 이는 유가 상승의 강력한 요인이 됩니다.',
+                'supply-down': '<strong>시나리오 (공급 감소):</strong> OPEC+와 같은 주요 산유국들이 생산량을 줄이기로 합의(감산)하면, 시장에 공급되는 석유가 줄어들어 유가가 상승합니다.',
+                'geopolitics': '<strong>시나리오 (지정학적 리스크):</strong> 중동 지역의 전쟁, 내전, 분쟁, 주요 수송로의 불안정 등은 공급 차질에 대한 우려를 즉각적으로 반영하여 유가를 급등시킵니다.',
+                'speculation': '<strong>시나리오 (시장 심리):</strong> 원유는 현물 외에 선물 시장에서 대규모로 거래됩니다. 미래에 유가가 오를 것이라는 기대(투기 자금 유입)만으로도 단기적인 유가 변동성이 크게 확대될 수 있습니다.'
+            };
+
+            const playerData = {
+                'opec': '<strong>OPEC+ (산유국 그룹):</strong> 사우디아라비아를 중심으로 한 OPEC(석유수출국기구)과 러시아 등 비OPEC 주요 산유국 연합(OPEC+)을 말합니다. 이들은 세계 원유 생산량의 상당 부분을 차지하며, 이들의 감산 또는 증산 결정은 국제 유가를 움직이는 핵심 요인입니다.',
+                'ioc': '<strong>국제 석유 회사 (IOC):</strong> 엑슨 모빌(Exxon Mobil), 쉘(Shell), 쉐브론(Chevron), BP 등 소위 \'슈퍼메이저\'라 불리는 거대 석유 기업들입니다. 이들은 탐사, 개발, 생산부터 운송, 정제, 판매까지 모든 단계(수직 계열화)에 참여하며 시장을 움직입니다.',
+                'consumers': '<strong>주요 소비국:</strong> 세계 최대 소비국인 미국과 급격히 소비를 늘리고 있는 중국과 인도 등은 막대한 수요를 바탕으로 유가에 영향을 미칩니다. 특히 미국의 원유 재고량이나 셰일 오일 생산량은 시장의 중요한 지표로 작용합니다.'
+            };
+
+            function updateActiveState(items, currentItem, activeClass) {
+                items.forEach(item => {
+                    item.classList.remove(activeClass);
+                });
+                currentItem.classList.add(activeClass);
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.dataset.target;
+                    
+                    updateActiveState(navLinks, link, 'active');
+
+                    sections.forEach(section => {
+                        if (section.id === targetId) {
+                            section.classList.add('active');
+                            section.classList.remove('hidden');
+                        } else {
+                            section.classList.add('hidden');
+                            section.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            impactButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetData = button.dataset.target;
+                    impactText.innerHTML = impactData[targetData];
+                    updateActiveState(impactButtons, button, 'active');
+                });
+            });
+            impactButtons[0].click();
+
+            benchmarkRows.forEach(row => {
+                row.addEventListener('click', () => {
+                    const targetData = row.dataset.target;
+                    benchmarkDetails.innerHTML = benchmarkData[targetData];
+                    benchmarkRows.forEach(r => r.classList.remove('bg-blue-100'));
+                    row.classList.add('bg-blue-100');
+                });
+            });
+
+            factorButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetData = button.dataset.target;
+                    priceScenarioText.innerHTML = factorData[targetData];
+                    updateActiveState(factorButtons, button, 'active');
+                });
+            });
+            factorButtons[0].click();
+
+            playerTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetData = tab.dataset.target;
+                    playerText.innerHTML = playerData[targetData];
+                    updateActiveState(playerTabs, tab, 'active');
+                });
+            });
+            playerTabs[0].click();
+
+            // LLM Function 1: Terminology Explainer
+            explainTermBtn.addEventListener('click', async () => {
+                const term = termInput.value.trim();
+
+                if (!term) {
+                    termOutput.innerHTML = '<strong class="text-red-500">설명할 용어를 입력해 주세요.</strong>';
+                    return;
+                }
+
+                termOutput.innerHTML = `<div class="flex items-center space-x-2 text-blue-600"><span class="animate-spin">🔄</span><span>'${term}'에 대한 설명을 분석 중입니다...</span></div>`;
+                
+                const systemPrompt = "당신은 석유 및 에너지 시장의 전문가입니다. 사용자가 요청한 용어에 대해 간결하고 정확하게, 한국어로 설명해 주세요. 최대 3~4문장으로 작성하고, 출처 인용을 반드시 포함합니다.";
+                const userQuery = `${term}의 의미는 무엇인가요?`;
+
+                const result = await fetchLLMResponse(userQuery, systemPrompt);
+                termOutput.innerHTML = result;
+            });
+
+            // LLM Function 2: Price Impact Analysis
+            analyzeScenarioBtn.addEventListener('click', async () => {
+                const scenario = scenarioInput.value.trim();
+
+                if (!scenario) {
+                    scenarioOutput.innerHTML = '<strong class="text-red-500">분석할 시나리오를 입력해 주세요.</strong>';
+                    return;
+                }
+
+                scenarioOutput.innerHTML = `<div class="flex items-center space-x-2 text-indigo-600"><span class="animate-spin">🔄</span><span>'${scenario}'가 유가에 미칠 영향을 분석 중입니다...</span></div>`;
+                
+                const systemPrompt = "당신은 글로벌 에너지 시장 전략가입니다. 사용자가 제시한 시나리오가 국제 유가(WTI, 브렌트유 기준)에 미칠 잠재적 영향을 '유가 전망'과 '주요 이유'로 나누어 한국어로 간결하게 분석해 주세요. 유가 전망은 '상승 요인', '하락 요인', '중립적' 중 하나로 명확히 제시합니다. 최대 5문장으로 작성하고, 출처 인용을 반드시 포함합니다.";
+                const userQuery = `${scenario} 시나리오가 국제 유가에 미치는 영향은 무엇인가요?`;
+
+                const result = await fetchLLMResponse(userQuery, systemPrompt);
+                scenarioOutput.innerHTML = result;
+            });
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            };
+
+            new Chart(document.getElementById('benchmarkChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['WTI (미국)', '브렌트유 (북해)', '두바이유 (중동)'],
+                    datasets: [{
+                        data: [33.3, 33.3, 33.3],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    plugins: {
+                        ...chartOptions.plugins,
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    return context.label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('factorsChart').getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: ['수요 측면 (경제 성장)', '공급 측면 (생산량, 리스크)', '시장 심리 (투기)'],
+                    datasets: [{
+                        data: [40, 40, 20],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    ...chartOptions,
+                    plugins: {
+                        ...chartOptions.plugins,
+                         tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    let value = context.parsed;
+                                    return label + ' 약 ' + value + '% 비중';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('playersChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['OPEC+ (산유국 연합)', '미국 (셰일 오일 등)', '기타 비OPEC 국가'],
+                    datasets: [{
+                        data: [45, 20, 35],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                     ...chartOptions,
+                     plugins: {
+                        ...chartOptions.plugins,
+                         tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    let value = context.parsed;
+                                    return label + ' 약 ' + value + '% 비중';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
