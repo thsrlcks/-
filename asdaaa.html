@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>금리와 주식 시장의 관계 분석</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: #E6F3FF;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            margin: 1.5rem auto 0 auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flow-box {
+            border: 2px solid #4DA8FF;
+            background-color: #ffffff;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: #00529B;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 280px;
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            color: #007BFF;
+            margin: 0.5rem 0;
+            font-weight: bold;
+        }
+        .flow-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+        h1, h2, h3 {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            font-weight: 700;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .stat-card {
+            background-color: #00529B;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100" style="background-color: #E6F3FF;">
+
+    <header class="py-10 bg-white" style="background-color: #00529B;">
+        <div class="max-w-6xl mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-white">금리(이자율)와 주식 시장의 관계 분석</h1>
+            <p class="text-lg text-gray-200 mt-2" style="color: #99CFFF;">이론, 예외, 그리고 현재 트렌드까지 한눈에 보기</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-4 md:p-8">
+
+        <section id="theory" class="card mb-8">
+            <h2 class="text-2xl font-bold text-center mb-6" style="color: #00529B;">1. 금리와 주식의 이론적 관계: 역(逆)의 관계</h2>
+            <p class="text-lg text-gray-700 mb-6 max-w-4xl mx-auto text-center">
+                경제학 이론에 따르면, 금리와 주가는 일반적으로 반대로 움직입니다. 금리가 오르면 주가에 하락 압력이, 금리가 내리면 상승 압력이 가해집니다. 이는 크게 세 가지 경로를 통해 발생합니다.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="p-6 rounded-lg" style="background-color: #F0F6FF;">
+                    <h3 class="text-xl font-bold text-center mb-4" style="color: #D9534F;">금리 상승 시 (주가 하락 압력 ▼)</h3>
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="flow-group">
+                            <div class="flow-box">1. 자산 대체 효과</div>
+                            <div class="flow-arrow">▼</div>
+                            <div class="flow-box">채권/예금 매력 ↑</div>
+                            <div class="flow-arrow">▼</div>
+                            <div class="flow-box">주식 수요 감소</div>
+                        </div>
+                        <div class="flow-group mt-4">
+                            <div class="flow-box">2. 할인율 증가</div>
+                            <div class="flow-arrow">▼</div>
+                            <div class="flow-box">기업 미래가치 하락</div>
+                            <div class="flow-arrow">▼</div>
+                            <div class="flow-box">현재 주가 하락</div>
+                        </div>
+                        <div class="flow-group mt-4">
+                            <div class="flow-box">3. 기업 비용 증가</div>
+                            <div class="flow-arrow">▼</div>
+                            <div class="flow-box">이자 부담/투자 위축</div>
+                            <div class="flow-arrow">▼</div>
+                            <div class="flow-box">순이익 감소</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 rounded-lg" style="background-color: #F0FFF4;">
+                    <h3 class="text-xl font-bold text-center mb-4" style="color: #5CB85C;">금리 하락 시 (주가 상승 압력 ▲)</h3>
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="flow-group">
+                            <div class="flow-box" style="border-color: #5CB85C; color: #3E8E41;">1. 자산 대체 효과</div>
+                            <div class="flow-arrow" style="color: #5CB85C;">▼</div>
+                            <div class="flow-box" style="border-color: #5CB85C; color: #3E8E41;">주식 시장 유동성 ↑</div>
+                            <div class="flow-arrow" style="color: #5CB85C;">▼</div>
+                            <div class="flow-box" style="border-color: #5CB85C; color: #3E8E41;">주식 수요 증가</div>
+                        </div>
+                        <div class="flow-group mt-4">
+                            <div class="flow-box" style="border-color: #5CB85C; color: #3E8E41;">2. 할인율 감소</div>
+                            <div class="flow-arrow" style="color: #5CB85C;">▼</div>
+                            <div class="flow-box" style="border-color: #5CB85C; color: #3E8E41;">기업 미래가치 상승</div>
+                            <div class="flow-arrow" style="color: #5CB85C;">▼</div>
+                            <div class="flow-box" style="border-color: #5CB85C; color: #3E8E41;">현재 주가 상승</div>
+                        </div>
+                        <div class="flow-group mt-4">
+                            <div class="flow-box" style="border-color: #5CB85C; color: #3E8E41;">3. 기업 비용 감소</div>
+                            <div class="flow-arrow" style="color: #5CB85C;">▼</div>
+                            <div class="flow-box" style="border-color: #5CB85C; color: #3E8E41;">이자 부담 감소/투자 확대</div>
+                            <div class="flow-arrow" style="color: #5CB85C;">▼</div>
+                            <div class="flow-box" style="border-color: #5CB85C; color: #3E8E41;">순이익 증가</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="exceptions" class="card mb-8">
+            <h2 class="text-2xl font-bold text-center mb-6" style="color: #00529B;">2. 예외적인 경우: 금리와 주가의 동행 (정의 관계)</h2>
+            <p class="text-lg text-gray-700 mb-6 max-w-4xl mx-auto text-center">
+                하지만 이론과 달리, 실제 시장에서는 금리와 주가가 함께 움직이는 경우가 더 흔합니다. 이는 금리 변화의 '배경'이 되는 '경기 상황'이 더 강력한 변수이기 때문입니다.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-center mb-2" style="color: #007BFF;">예외 1: 경기 호황기 (금리 ↑, 주가 ↑)</h3>
+                    <p class="text-center text-gray-600 mb-4">
+                        경기 과열을 막기 위해 금리를 인상해도, 기업 이익 증가세가 더 강하면 주가도 함께 상승합니다. (예: 2003-2007년)
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="boomChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-center mb-2" style="color: #007BFF;">예외 2: 경기 침체기 (금리 ↓, 주가 ↓)</h3>
+                    <p class="text-center text-gray-600 mb-4">
+                        경기 부양을 위해 금리를 인하해도, 기업 실적 악화 우려가 더 크면 주가도 함께 하락합니다. (예: 2008년 금융위기)
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="bustChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="complexity" class="card mb-8">
+            <h2 class="text-2xl font-bold text-center mb-6" style="color: #00529B;">3. 왜 이렇게 복잡할까? (추가 변수들)</h2>
+            <p class="text-lg text-gray-700 mb-8 max-w-4xl mx-auto text-center">
+                금리와 주식의 관계가 단순하지 않은 이유는, '경기'라는 큰 변수 외에도 다음과 같은 요인들이 시장에 복합적으로 작용하기 때문입니다.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="card p-6 text-center" style="border-top: 4px solid #007BFF;">
+                    <span class="text-4xl">🧭</span>
+                    <h3 class="text-lg font-bold mt-4 mb-2" style="color: #00529B;">선반영의 원리</h3>
+                    <p class="text-sm text-gray-600">주식 시장은 현재 금리보다 '미래의 금리 변화 예측'을 먼저 반영합니다. 불확실성 해소만으로도 주가는 오를 수 있습니다.</p>
+                </div>
+                <div class="card p-6 text-center" style="border-top: 4px solid #007BFF;">
+                    <span class="text-4xl">🔥</span>
+                    <h3 class="text-lg font-bold mt-4 mb-2" style="color: #00529B;">인플레이션 (물가)</h3>
+                    <p class="text-sm text-gray-600">금리 변화의 '원인'입니다. 금리 인상을 촉발한 인플레이션의 수준과 방향성이 주가에 더 큰 영향을 미칠 수 있습니다.</p>
+                </div>
+                <div class="card p-6 text-center" style="border-top: 4px solid #007BFF;">
+                    <span class="text-4xl">🌊</span>
+                    <h3 class="text-lg font-bold mt-4 mb-2" style="color: #00529B;">유동성 (글로벌 자금)</h3>
+                    <p class="text-sm text-gray-600">특히 한국 증시는 미국 금리 변화에 따른 글로벌 투자 자금의 유출입(환율)에 매우 민감하게 반응합니다.</p>
+                </div>
+                <div class="card p-6 text-center" style="border-top: 4px solid #007BFF;">
+                    <span class="text-4xl">📊</span>
+                    <h3 class="text-lg font-bold mt-4 mb-2" style="color: #00529B;">경제 주체별 차이</h3>
+                    <p class="text-sm text-gray-600">금리는 모든 주식에 동일하게 작용하지 않습니다. 성장주는 할인율에, 가치주는 경기 상황에 더 민감합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="trends" class="card">
+            <h2 class="text-2xl font-bold text-center mb-6" style="color: #00529B;">4. 현재 트렌드 (2025년 하반기 동향)</h2>
+            <p class="text-lg text-gray-700 mb-8 max-w-4xl mx-auto text-center">
+                현재 시장은 '금리 하락 기대'와 'AI 기술 혁신'이라는 두 가지 큰 동력이 고금리 환경의 부정적 효과를 상쇄하며 복잡한 양상을 보이고 있습니다.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-center mb-2" style="color: #007BFF;">현재 시장을 움직이는 핵심 동력</h3>
+                    <p class="text-center text-gray-600 mb-4">
+                        AI 랠리가 금리 인하 기대감보다 더 강력한 모멘텀으로 작용하며, 견조한 경제 성장이 이를 뒷받침하고 있습니다.
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-center mb-2" style="color: #007BFF;">시장의 양극화: 섹터별 차별화</h3>
+                    <p class="text-center text-gray-600 mb-4">
+                        시장의 상승세는 AI 및 소수 초대형 기술주에 집중되어 있으며, 그 외 다수 종목은 고금리의 부담을 받고 있습니다.
+                    </p>
+                    <div class="chart-container" style="max-width: 350px; height: 350px;">
+                        <canvas id="divergenceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 mt-8" style="background-color: #00529B;">
+        <p class="text-sm" style="color: #99CFFF;">본 인포그래픽은 '금리와 주식시장 관계 분석' 자료를 기반으로 제작되었습니다.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const commonTooltipCallback = {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                  return label.join(' ');
+                                } else {
+                                  return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const bluePalette = {
+                darkBlue: '#00529B',
+                midBlue: '#007BFF',
+                lightBlue: '#4DA8FF',
+                lighterBlue: '#99CFFF',
+                bgBlue: '#E6F3FF'
+            };
+
+            if (document.getElementById('boomChart')) {
+                const ctxBoom = document.getElementById('boomChart').getContext('2d');
+                new Chart(ctxBoom, {
+                    type: 'line',
+                    data: {
+                        labels: ['2003', '2004', '2005', '2006', '2007'],
+                        datasets: [
+                            {
+                                label: '금리 (Rate)',
+                                data: [1.0, 1.5, 2.5, 4.0, 5.0],
+                                borderColor: bluePalette.midBlue,
+                                backgroundColor: bluePalette.midBlue,
+                                tension: 0.1,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: '주가 (Stock)',
+                                data: [1000, 1200, 1400, 1700, 2000],
+                                borderColor: bluePalette.darkBlue,
+                                backgroundColor: bluePalette.darkBlue,
+                                tension: 0.1,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: { display: true, text: '금리 (%)' }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: '주가 지수' },
+                                grid: { drawOnChartArea: false }
+                            }
+                        },
+                        ...commonTooltipCallback
+                    }
+                });
+            }
+            
+            if (document.getElementById('bustChart')) {
+                const ctxBust = document.getElementById('bustChart').getContext('2d');
+                new Chart(ctxBust, {
+                    type: 'line',
+                    data: {
+                        labels: ['2008 Q1', '2008 Q2', '2008 Q3', '2008 Q4', '2009 Q1'],
+                        datasets: [
+                            {
+                                label: '금리 (Rate)',
+                                data: [4.0, 3.0, 2.0, 0.5, 0.25],
+                                borderColor: bluePalette.lightBlue,
+                                backgroundColor: bluePalette.lightBlue,
+                                tension: 0.1,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: '주가 (Stock)',
+                                data: [1500, 1400, 1200, 900, 700],
+                                borderColor: '#D9534F',
+                                backgroundColor: '#D9534F',
+                                tension: 0.1,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: { display: true, text: '금리 (%)' }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: '주가 지수' },
+                                grid: { drawOnChartArea: false }
+                            }
+                        },
+                        ...commonTooltipCallback
+                    }
+                });
+            }
+
+            if (document.getElementById('trendChart')) {
+                const ctxTrend = document.getElementById('trendChart').getContext('2d');
+                new Chart(ctxTrend, {
+                    type: 'bar',
+                    data: {
+                        labels: ['AI/기술주 랠리', '금리 인하 기대감', '견조한 경제 성장'],
+                        datasets: [{
+                            label: '시장 영향력 (가상 수치)',
+                            data: [95, 80, 70],
+                            backgroundColor: [
+                                bluePalette.darkBlue,
+                                bluePalette.midBlue,
+                                bluePalette.lightBlue
+                            ],
+                            borderColor: [
+                                bluePalette.darkBlue,
+                                bluePalette.midBlue,
+                                bluePalette.lightBlue
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            ...commonTooltipCallback.plugins,
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (document.getElementById('divergenceChart')) {
+                const ctxDivergence = document.getElementById('divergenceChart').getContext('2d');
+                new Chart(ctxDivergence, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['AI/초대형 기술주', '그 외 시장'],
+                        datasets: [{
+                            label: '시장 상승 기여도',
+                            data: [65, 35],
+                            backgroundColor: [
+                                bluePalette.darkBlue,
+                                bluePalette.lighterBlue
+                            ],
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        ...commonTooltipCallback
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
